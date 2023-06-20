@@ -32,7 +32,7 @@ namespace XRRemote
     public static class DebugFlags
     {
         public static readonly bool globalDisplay = true;
-
+        public static readonly bool displayXRRemoteImageManagerStats = globalDisplay;
         public static readonly bool displayCompressionStats = globalDisplay;
         public static readonly bool displayEditorConnectionStats = globalDisplay;
         public static readonly bool displayXRRemotePacketStats = globalDisplay;
