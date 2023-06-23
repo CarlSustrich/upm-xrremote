@@ -7,13 +7,14 @@ namespace XRRemote
 {
     #if UNITY_EDITOR
     using UnityEditor;
-    using UnityEditor.Build;
-    using UnityEditor.Build.Reporting;
+    // using UnityEditor.Build;
+    // using UnityEditor.Build.Reporting;
     #endif
 
     public static class ImageLibraryAssetBundler
     { 
 
+        //needs to be refined to not include the given name of library to enable more generic reconstruction
         public static void BuildAssetBundle(this XRReferenceImageLibrary imageLibrary)
         {
             // Create the array of bundle build details.
@@ -28,129 +29,26 @@ namespace XRRemote
 
             string outputDirectory = "Assets/StreamingAssets/AssetBundles/";
 
+            //This is a directory path used frequently.......refine this before shipping or risk ANGRY USERS
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            System.IO.DirectoryInfo di = new DirectoryInfo(outputDirectory);
+            foreach(FileInfo file in di.GetFiles())
+            {   
+                file.Delete();
+            }
+
             BuildPipeline.BuildAssetBundles(outputDirectory, buildMap, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
+
+            string outputPath = Path.Combine(outputDirectory, "imagelibrarybundle");   
         }
-        
-        
-        // public static void BuildAssetBundle(this XRReferenceImageLibrary imageLibrary)
-        // {
-        //     string assetBundleName = "referenceimagelibrary";
-        //     string assetName = imageLibrary.name;
-        //     string outputDirectory = "Assets/StreamingAssets/AssetBundles/";
-        //     string outputPath = Path.Combine(outputDirectory, assetName.ToLower() + ".assetbundle");
-            
-        //     Debug.Log("Building asset bundle...");
-
-        //     if (!Directory.Exists(outputDirectory))
-        //     {
-        //         Directory.CreateDirectory(outputDirectory);
-        //     }
-
-        //     //Delete previous bundle, if present
-        //     System.IO.DirectoryInfo di = new DirectoryInfo(outputDirectory);
-        //     foreach(FileInfo file in di.GetFiles())
-        //     {   
-        //         file.Delete();
-        //     }
-
-        //     // Set the build options for the asset bundle
-        //     BuildAssetBundleOptions buildOptions = BuildAssetBundleOptions.None;
-
-        //     // Create a temporary asset bundle manifest
-        //     AssetBundleBuild[] assetBundleBuilds = new AssetBundleBuild[1];
-        //     AssetBundleBuild bundleBuild = new AssetBundleBuild();
-        //     bundleBuild.assetBundleName = assetBundleName;
-        //     bundleBuild.assetNames = new string[] { AssetDatabase.GetAssetPath(imageLibrary) };
-        //     bundleBuild.assetBundleAssets = new string[] { AssetDatabase.GetAssetPath(imageLibrary) };
-        //     assetBundleBuilds[0] = bundleBuild;
-
-        //     // Build the asset bundle
-        //     AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(outputDirectory, assetBundleBuilds, buildOptions, EditorUserBuildSettings.activeBuildTarget);
-
-        //     if (manifest != null)
-        //     {
-        //         Debug.Log("Asset bundle created successfully at: " + outputPath);
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("Failed to create asset bundle.");
-        //     }
-        // }
-    
-
-        // public static void BuildAssetBundle(this XRReferenceImageLibrary imageLibrary)
-        // {
-        //     string assetBundleName = "ReferenceImageLibrary";
-        //     string assetName = imageLibrary.name;
-        //     string outputDirectory = "Assets/StreamingAssetBundles/";
-        //     string outputPath = outputDirectory + assetName + ".asset"; 
-
-        //     Debug.Log("Building asset bundle...");
-
-        //     if (!Directory.Exists(outputDirectory))
-        //     {
-        //         Directory.CreateDirectory(outputDirectory);
-        //     }
-
-        //     if(File.Exists(outputDirectory))
-        //     {
-        //         File.Delete(outputDirectory);
-        //     }
-
-        //     // Create an instance of AssetBundleBuild
-        //     AssetBundleBuild assetBundleBuild = new AssetBundleBuild();
-        //     assetBundleBuild.assetBundleName = assetBundleName;
-        //     assetBundleBuild.assetNames = new string[] { assetName };
-
-
-        //     // Build the asset bundle
-        //     BuildPipeline.BuildAssetBundles(outputDirectory, new AssetBundleBuild[] { assetBundleBuild }, BuildAssetBundleOptions.None, BuildTarget.Android);
-
-        //     Debug.Log("Asset bundle created successfully at: " + outputDirectory);
-            
-        // }
-
-        // public static void BuildAssetBundle(this XRReferenceImageLibrary imageLibrary)
-        // {
-        //     string assetBundleName = "referenceimagelibrary";
-        //     string assetName = imageLibrary.name;
-        //     string outputDirectory = "Assets/StreamingAssets/AssetBundles";
-        //     string outputPath = Path.Combine(outputDirectory, assetName.ToLower() + ".assetbundle");
-
-        //     Debug.Log("Building asset bundle...");
-
-        //     if (!Directory.Exists(outputDirectory))
-        //     {
-        //         Directory.CreateDirectory(outputDirectory);
-        //     }
-
-        //     // Set the build options for the asset bundle
-        //     BuildAssetBundleOptions buildOptions = BuildAssetBundleOptions.None;
-
-        //     // Create a temporary asset bundle manifest
-        //     AssetBundleBuild[] assetBundleBuilds = new AssetBundleBuild[1];
-        //     AssetBundleBuild bundleBuild = new AssetBundleBuild();
-        //     bundleBuild.assetBundleName = assetBundleName;
-        //     bundleBuild.assetNames = new string[] { AssetDatabase.GetAssetPath(imageLibrary) };
-        //     assetBundleBuilds[0] = bundleBuild;
-
-        //     // Build the asset bundle
-        //     BuildReport buildReport = BuildPipeline.BuildAssetBundles(outputDirectory, assetBundleBuilds, buildOptions, EditorUserBuildSettings.activeBuildTarget);
-
-        //     if (buildReport != null && buildReport.summary.result == BuildResult.Succeeded)
-        //     {
-        //         Debug.Log("Asset bundle created successfully at: " + outputPath);
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("Failed to create asset bundle.");
-        //     }
-        // }
     } 
    
 }
 
-// Needs setting added to specify target build platform android / iOS  -- addressed via dynmically targetting build platform
 /*
 Must review compression methods:
 

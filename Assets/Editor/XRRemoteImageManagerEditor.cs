@@ -1,14 +1,12 @@
 using UnityEditor;
 using UnityEngine;
+using System.IO;
 
-namespace XRRemote
+namespace XRRemote 
 {
     [CustomEditor(typeof(XRRemoteImageManager))]
     public class XRRemoteImageManagerEditor : Editor
     {
-        private GUIStyle redButtonStyle;
-        private GUIStyle greenButtonStyle;
-    
         private bool isPlayMode;
 
         private void OnEnable()
@@ -24,7 +22,9 @@ namespace XRRemote
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            UpdatePlayModeState();
+            // UpdatePlayModeState();
+            isPlayMode = EditorApplication.isPlaying;
+            Repaint();
         }
 
         private void UpdatePlayModeState()
@@ -40,11 +40,7 @@ namespace XRRemote
 
             DrawDefaultInspector();
 
-            redButtonStyle = new GUIStyle(GUI.skin.button);
-            redButtonStyle.normal.textColor = Color.red;
 
-            greenButtonStyle = new GUIStyle(GUI.skin.button);
-            greenButtonStyle.normal.textColor = Color.green;
 
             if (!isPlayMode)
             {
@@ -55,18 +51,12 @@ namespace XRRemote
                         manager.imageLibrary.BuildAssetBundle();
                     }
                 }
-                // if (GUILayout.Button(new GUIContent("Send Library", "Green: Library is up to date on device.\nYellow: Library has changed on the device and needs to be sent.\nRed: Library is not ready to be sent."),
-                //     myScript.readyToSend ? greenButtonStyle : (myScript.libraryChanged ? yellowButtonStyle : redButtonStyle)))
-                // {
-                //     myScript.TestingButton();
-                // }
             }
             else
             {
                 GUI.enabled = false;
                 EditorGUILayout.LabelField("Send Library", "Disabled in play mode");
                 GUI.enabled = true;
-
             }
             serializedObject.ApplyModifiedProperties();
         }
